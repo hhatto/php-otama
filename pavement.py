@@ -13,3 +13,9 @@ def buildmodule():
 def allclean():
     os.system('rm -rf ./*')
     os.system('git reset --hard HEAD')
+
+
+@task
+def fresh():
+    allclean()
+    buildmodule()
