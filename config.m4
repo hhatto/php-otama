@@ -60,4 +60,6 @@ if test "$PHP_OTAMA" != "no"; then
   dnl PHP_SUBST(OTAMA_SHARED_LIBADD)
 
   PHP_NEW_EXTENSION(otama, otama.c, $ext_shared)
+  PHP_ADD_LIBRARY(otama, , OTAMA_SHARED_LIBADD)
+  PHP_SUBST(OTAMA_SHARED_LIBADD)
 fi
