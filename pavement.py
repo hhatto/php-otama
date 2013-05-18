@@ -13,7 +13,7 @@ def buildmodule():
 @task
 def allclean():
     """clean and rollback default constitution"""
-    os.system('rm -rf ./*')
+    os.system('rm -rf ./* .deps .libs')
     os.system('git reset --hard HEAD')
 
 
