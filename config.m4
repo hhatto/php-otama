@@ -13,9 +13,9 @@ dnl [  --with-otama             Include otama support])
 
 dnl Otherwise use enable:
 
-dnl PHP_ARG_ENABLE(otama, whether to enable otama support,
-dnl Make sure that the comment is aligned:
-dnl [  --enable-otama           Enable otama support])
+PHP_ARG_ENABLE(otama, whether to enable otama support,
+Make sure that the comment is aligned:
+[  --enable-otama           Enable otama support])
 
 if test "$PHP_OTAMA" != "no"; then
   dnl Write more examples of tests here...
