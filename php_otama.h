@@ -21,6 +21,8 @@
 #ifndef PHP_OTAMA_H
 #define PHP_OTAMA_H
 
+#include "otama.h"
+
 extern zend_module_entry otama_module_entry;
 #define phpext_otama_ptr &otama_module_entry
 
@@ -41,6 +43,8 @@ PHP_MSHUTDOWN_FUNCTION(otama);
 PHP_RINIT_FUNCTION(otama);
 PHP_RSHUTDOWN_FUNCTION(otama);
 PHP_MINFO_FUNCTION(otama);
+
+PHPAPI zend_class_entry *otama_class_entry;
 
 PHP_FUNCTION(confirm_otama_compiled);	/* For testing, remove later. */
 

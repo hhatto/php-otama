@@ -89,13 +89,25 @@ static void php_otama_init_globals(zend_otama_globals *otama_globals)
 */
 /* }}} */
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_otama_open, 0, 0, 1)
+	ZEND_ARG_INFO(0, open)
+	ZEND_END_ARG_INFO()
+PHP_METHOD(otama, open)
+{
+}
+
+static zend_function_entry php_otama_methods[] = {
+	PHP_ME(otama, open, arginfo_otama_open, ZEND_ACC_PUBLIC)
+	{NULL, NULL, NULL}
+};
+
 /* {{{ PHP_MINIT_FUNCTION
  */
 PHP_MINIT_FUNCTION(otama)
 {
-	/* If you have INI entries, uncomment these lines 
-	REGISTER_INI_ENTRIES();
-	*/
+	zend_class_entry ce;
+	INIT_CLASS_ENTRY(ce, "Otama", php_otama_methods);
+	otama_class_entry = zend_register_internal_class(&ce TSRMLS_CC);
 	return SUCCESS;
 }
 /* }}} */
@@ -136,10 +148,6 @@ PHP_MINFO_FUNCTION(otama)
 	php_info_print_table_start();
 	php_info_print_table_header(2, "otama support", "enabled");
 	php_info_print_table_end();
-
-	/* Remove comments if you have entries in php.ini
-	DISPLAY_INI_ENTRIES();
-	*/
 }
 /* }}} */
 
