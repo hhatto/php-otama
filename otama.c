@@ -37,9 +37,9 @@ static int le_otama;
  * Every user visible function must have an entry in otama_functions[].
  */
 const zend_function_entry otama_functions[] = {
-	PHP_ME(otama, open, NULL, 0)
-	PHP_ME(otama, similarity, NULL, 0)
-	PHP_FE_END	/* Must be the last line in otama_functions[] */
+    PHP_ME(otama, open, NULL, 0)
+    PHP_ME(otama, similarity, NULL, 0)
+    PHP_FE_END  /* Must be the last line in otama_functions[] */
 };
 /* }}} */
 
@@ -47,19 +47,19 @@ const zend_function_entry otama_functions[] = {
  */
 zend_module_entry otama_module_entry = {
 #if ZEND_MODULE_API_NO >= 20010901
-	STANDARD_MODULE_HEADER,
+    STANDARD_MODULE_HEADER,
 #endif
-	"otama",
-	otama_functions,
-	PHP_MINIT(otama),
-	PHP_MSHUTDOWN(otama),
-	PHP_RINIT(otama),		/* Replace with NULL if there's nothing to do at request start */
-	PHP_RSHUTDOWN(otama),	/* Replace with NULL if there's nothing to do at request end */
-	PHP_MINFO(otama),
+    "otama",
+    otama_functions,
+    PHP_MINIT(otama),
+    PHP_MSHUTDOWN(otama),
+    PHP_RINIT(otama),       /* Replace with NULL if there's nothing to do at request start */
+    PHP_RSHUTDOWN(otama),   /* Replace with NULL if there's nothing to do at request end */
+    PHP_MINFO(otama),
 #if ZEND_MODULE_API_NO >= 20010901
-	"0.1", /* Replace with version number for your extension */
+    "0.1", /* Replace with version number for your extension */
 #endif
-	STANDARD_MODULE_PROPERTIES
+    STANDARD_MODULE_PROPERTIES
 };
 /* }}} */
 
@@ -78,7 +78,7 @@ PHP_INI_END()
  */
 static void php_otama_init_globals(zend_otama_globals *otama_globals)
 {
-	otama_globals->_otama = NULL;
+    otama_globals->_otama = NULL;
 }
 /* }}} */
 
@@ -141,22 +141,22 @@ PHP_METHOD(otama, similarity)
 }
 
 static zend_function_entry php_otama_methods[] = {
-	{NULL, NULL, NULL}
+    {NULL, NULL, NULL}
 };
 
 /* {{{ PHP_MINIT_FUNCTION
  */
 PHP_MINIT_FUNCTION(otama)
 {
-	zend_class_entry ce;
-	INIT_CLASS_ENTRY(ce, "Otama", otama_functions);
-	otama_ce = zend_register_internal_class(&ce TSRMLS_CC);
+    zend_class_entry ce;
+    INIT_CLASS_ENTRY(ce, "Otama", otama_functions);
+    otama_ce = zend_register_internal_class(&ce TSRMLS_CC);
 
     ZEND_INIT_MODULE_GLOBALS(otama, php_otama_init_globals, NULL);
 
     //REGISTER_INI_ENTRIES();
 
-	return SUCCESS;
+    return SUCCESS;
 }
 /* }}} */
 
@@ -164,8 +164,8 @@ PHP_MINIT_FUNCTION(otama)
  */
 PHP_MSHUTDOWN_FUNCTION(otama)
 {
-	//UNREGISTER_INI_ENTRIES();
-	return SUCCESS;
+    //UNREGISTER_INI_ENTRIES();
+    return SUCCESS;
 }
 /* }}} */
 
@@ -174,7 +174,7 @@ PHP_MSHUTDOWN_FUNCTION(otama)
  */
 PHP_RINIT_FUNCTION(otama)
 {
-	return SUCCESS;
+    return SUCCESS;
 }
 /* }}} */
 
@@ -183,7 +183,7 @@ PHP_RINIT_FUNCTION(otama)
  */
 PHP_RSHUTDOWN_FUNCTION(otama)
 {
-	return SUCCESS;
+    return SUCCESS;
 }
 /* }}} */
 
@@ -191,17 +191,8 @@ PHP_RSHUTDOWN_FUNCTION(otama)
  */
 PHP_MINFO_FUNCTION(otama)
 {
-	php_info_print_table_start();
-	php_info_print_table_header(2, "otama support", "enabled");
-	php_info_print_table_end();
+    php_info_print_table_start();
+    php_info_print_table_header(2, "otama support", "enabled");
+    php_info_print_table_end();
 }
 /* }}} */
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- * vim600: noet sw=4 ts=4 fdm=marker
- * vim<600: noet sw=4 ts=4
- */

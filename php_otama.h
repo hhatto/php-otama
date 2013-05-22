@@ -27,11 +27,11 @@ extern zend_module_entry otama_module_entry;
 #define phpext_otama_ptr &otama_module_entry
 
 #ifdef PHP_WIN32
-#	define PHP_OTAMA_API __declspec(dllexport)
+#   define PHP_OTAMA_API __declspec(dllexport)
 #elif defined(__GNUC__) && __GNUC__ >= 4
-#	define PHP_OTAMA_API __attribute__ ((visibility("default")))
+#   define PHP_OTAMA_API __attribute__ ((visibility("default")))
 #else
-#	define PHP_OTAMA_API
+#   define PHP_OTAMA_API
 #endif
 
 #ifdef ZTS
@@ -50,7 +50,7 @@ PHP_METHOD(otama, open);
 PHP_METHOD(otama, similarity);
 
 ZEND_BEGIN_MODULE_GLOBALS(otama)
-	otama_t  *_otama;
+    otama_t  *_otama;
 ZEND_END_MODULE_GLOBALS(otama)
 
 /* In every utility function you add that needs to use variables 
@@ -69,14 +69,4 @@ ZEND_END_MODULE_GLOBALS(otama)
 #define OTAMA_G(v) (otama_globals.v)
 #endif
 
-#endif	/* PHP_OTAMA_H */
-
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- * vim600: noet sw=4 ts=4 fdm=marker
- * vim<600: noet sw=4 ts=4
- */
+#endif  /* PHP_OTAMA_H */
