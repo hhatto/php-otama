@@ -27,4 +27,4 @@ def fresh():
 def exec_examples():
     """execute all examples"""
     os.chdir('examples')
-    os.system('php example.php')
+    os.system('php similarity.php')
