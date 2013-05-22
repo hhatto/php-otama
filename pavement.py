@@ -22,3 +22,9 @@ def fresh():
     """clean and build"""
     allclean()
     buildmodule()
+
+@task
+def exec_examples():
+    """execute all examples"""
+    os.chdir('examples')
+    os.system('php example.php')
