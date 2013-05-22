@@ -44,19 +44,14 @@ PHP_RINIT_FUNCTION(otama);
 PHP_RSHUTDOWN_FUNCTION(otama);
 PHP_MINFO_FUNCTION(otama);
 
-PHPAPI zend_class_entry *otama_class_entry;
+PHPAPI zend_class_entry *otama_ce;
 
-PHP_FUNCTION(confirm_otama_compiled);	/* For testing, remove later. */
-
-/* 
-  	Declare any global variables you may need between the BEGIN
-	and END macros here:     
+PHP_METHOD(otama, open);
+PHP_METHOD(otama, similarity);
 
 ZEND_BEGIN_MODULE_GLOBALS(otama)
-	long  global_value;
-	char *global_string;
+	otama_t  *_otama;
 ZEND_END_MODULE_GLOBALS(otama)
-*/
 
 /* In every utility function you add that needs to use variables 
    in php_otama_globals, call TSRMLS_FETCH(); after declaring other 

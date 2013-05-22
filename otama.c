@@ -27,9 +27,7 @@
 #include "ext/standard/info.h"
 #include "php_otama.h"
 
-/* If you declare any globals in php_otama.h uncomment this:
 ZEND_DECLARE_MODULE_GLOBALS(otama)
-*/
 
 /* True global resources - no need for thread safety here */
 static int le_otama;
@@ -39,7 +37,8 @@ static int le_otama;
  * Every user visible function must have an entry in otama_functions[].
  */
 const zend_function_entry otama_functions[] = {
-	PHP_FE(confirm_otama_compiled,	NULL)		/* For testing, remove later. */
+	PHP_ME(otama, open, NULL, 0)
+	PHP_ME(otama, similarity, NULL, 0)
 	PHP_FE_END	/* Must be the last line in otama_functions[] */
 };
 /* }}} */
@@ -70,34 +69,78 @@ ZEND_GET_MODULE(otama)
 
 /* {{{ PHP_INI
  */
-/* Remove comments and fill if you need to have entries in php.ini
 PHP_INI_BEGIN()
-    STD_PHP_INI_ENTRY("otama.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_otama_globals, otama_globals)
-    STD_PHP_INI_ENTRY("otama.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_otama_globals, otama_globals)
+    STD_PHP_INI_ENTRY("otama._otama", "0", PHP_INI_ALL, OnUpdateLong, _otama, zend_otama_globals, otama_globals)
 PHP_INI_END()
-*/
 /* }}} */
 
 /* {{{ php_otama_init_globals
  */
-/* Uncomment this function if you have INI entries
 static void php_otama_init_globals(zend_otama_globals *otama_globals)
 {
-	otama_globals->global_value = 0;
-	otama_globals->global_string = NULL;
+	otama_globals->_otama = NULL;
 }
-*/
 /* }}} */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_otama_open, 0, 0, 1)
-	ZEND_ARG_INFO(0, open)
-	ZEND_END_ARG_INFO()
+    ZEND_ARG_INFO(0, config)
+    ZEND_END_ARG_INFO()
 PHP_METHOD(otama, open)
 {
+    otama_t *o;
+    otama_status_t ret = OTAMA_STATUS_OK;
+    char *config_string;
+    int config_string_len;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &config_string, &config_string_len) == FAILURE) {
+        return;
+    }
+
+    ret = otama_open(&OTAMA_G(_otama), config_string);
+
+    RETURN_TRUE;
+}
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_otama_similarity, 0, 0, 1)
+    ZEND_ARG_INFO(0, filename1)
+    ZEND_ARG_INFO(0, filename2)
+    ZEND_END_ARG_INFO()
+PHP_METHOD(otama, similarity)
+{
+    otama_t *o = OTAMA_G(_otama);
+    otama_variant_pool_t *pool;
+    otama_variant_t *var1, *var2;
+    otama_status_t ret = OTAMA_STATUS_OK;
+    char *filename1, *filename2;
+    int strlen1, strlen2;
+    float similarity = 0.0f;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+                              "ss", &filename1, &strlen1, &filename2, &strlen2) == FAILURE) {
+        return;
+    }
+
+    pool = otama_variant_pool_alloc();
+    var1 = otama_variant_new(pool);
+    var2 = otama_variant_new(pool);
+
+    otama_variant_set_string(var1, filename1);
+    otama_variant_set_string(var2, filename2);
+
+    //ret = otama_similarity(o, &similarity, var1, var2);
+    ret = otama_similarity_file(o, &similarity, filename1, filename2);
+    if (ret != OTAMA_STATUS_OK) {
+        otama_variant_pool_free(&pool);
+        //otamapy_raise(ret);
+        return;
+    }
+
+    otama_variant_pool_free(&pool);
+
+    RETURN_DOUBLE(similarity);
 }
 
 static zend_function_entry php_otama_methods[] = {
-	PHP_ME(otama, open, arginfo_otama_open, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 
@@ -106,8 +149,13 @@ static zend_function_entry php_otama_methods[] = {
 PHP_MINIT_FUNCTION(otama)
 {
 	zend_class_entry ce;
-	INIT_CLASS_ENTRY(ce, "Otama", php_otama_methods);
-	otama_class_entry = zend_register_internal_class(&ce TSRMLS_CC);
+	INIT_CLASS_ENTRY(ce, "Otama", otama_functions);
+	otama_ce = zend_register_internal_class(&ce TSRMLS_CC);
+
+    ZEND_INIT_MODULE_GLOBALS(otama, php_otama_init_globals, NULL);
+
+    //REGISTER_INI_ENTRIES();
+
 	return SUCCESS;
 }
 /* }}} */
@@ -116,9 +164,7 @@ PHP_MINIT_FUNCTION(otama)
  */
 PHP_MSHUTDOWN_FUNCTION(otama)
 {
-	/* uncomment this line if you have INI entries
-	UNREGISTER_INI_ENTRIES();
-	*/
+	//UNREGISTER_INI_ENTRIES();
 	return SUCCESS;
 }
 /* }}} */
@@ -150,35 +196,6 @@ PHP_MINFO_FUNCTION(otama)
 	php_info_print_table_end();
 }
 /* }}} */
-
-
-/* Remove the following function when you have successfully modified config.m4
-   so that your module can be compiled into PHP, it exists only for testing
-   purposes. */
-
-/* Every user-visible function in PHP should document itself in the source */
-/* {{{ proto string confirm_otama_compiled(string arg)
-   Return a string to confirm that the module is compiled in */
-PHP_FUNCTION(confirm_otama_compiled)
-{
-	char *arg = NULL;
-	int arg_len, len;
-	char *strg;
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
-		return;
-	}
-
-	len = spprintf(&strg, 0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "otama", arg);
-	RETURN_STRINGL(strg, len, 0);
-}
-/* }}} */
-/* The previous line is meant for vim and emacs, so it can correctly fold and 
-   unfold functions in source code. See the corresponding marks just before 
-   function definition, where the functions purpose is also documented. Please 
-   follow this convention for the convenience of others editing your code.
-*/
-
 
 /*
  * Local variables:
